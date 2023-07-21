@@ -4,6 +4,26 @@ import {useState} from 'react';
 
 const days = ["א", "ב", "ג", "ד", "ה", "ו"];
 
+function stringify_exam_dates(exam_dates) {
+    let result = "";
+
+    if (exam_dates !== undefined) {
+        let first = true;
+
+        for (let exam of exam_dates) {
+            if (!first) result += ", ";
+            first = false;
+            result += exam["date"] + " (" + exam["moed"] + " - " + exam["type"] + ")";
+        }
+    }
+
+    if (result === "") {
+        result = "אין בחינות";
+    }
+
+    return result;
+}
+
 function App() {
   const [myMyData, setMyMyData] = useState(() => {
     for (let i = 0; i < myData.length; i++) {
@@ -19,6 +39,11 @@ function App() {
   return (
     <div>
       <h1>Hello world!</h1>
+      <ul dir="rtl">
+        { checkedStuff.map(thing =>
+            <li>{ thing["name"] }: { stringify_exam_dates(thing["exam_dates"]) }</li>
+        ) }
+      </ul>
       <table dir="rtl" width="100%">
         <thead>
           <tr>
@@ -59,6 +84,7 @@ function App() {
             <th>מרצה</th>
             <th>קבוצה</th>
             <th>שעות</th>
+            <th>מבחנים</th>
           </tr>
         </thead>
         <tbody>
@@ -75,6 +101,7 @@ function App() {
                 <td>{x["lecturer"]}</td>
                 <td>{x["group"]}</td>
                 <td>{x["lessons"].filter(y => y["time"] !== "").map(y => y["time"] + " יום " + y["day"] + " סמסטר " + y["semester"]).toString()}</td>
+                <td>{stringify_exam_dates(x["exam_dates"])}</td>
               </tr>)
             )
           }
